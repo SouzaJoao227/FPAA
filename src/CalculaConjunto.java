@@ -2,30 +2,47 @@
 import java.util.LinkedList;
 
 public class CalculaConjunto {
-    public static LinkedList<Integer> resultReturn = new LinkedList<Integer>();
+	private LinkedList<Integer> resultReturn;
+	private int[] conjunto;
 
-    // Árvore começa do último elemento do vetor
-    public static boolean isSubsetSum(int conjunto[],
-            int vetSize, int sum) {
-        // Casos base
+	
+	
+	public CalculaConjunto(int[] conjunto) {
+		this.conjunto = conjunto;
+		resultReturn = new LinkedList<Integer>();
+	}
 
-        if (sum == 0) {
-            return true;
-        }
-        if (vetSize == 0) {
-            return false;
-        }
-        // Desce na árvore até até o primeiro elemento à esquerda, note que mesmo achando o valor exato ele continua descendo já que sum nunca será 0 
-        if (isSubsetSum(conjunto, vetSize - 1, sum)) {
-            return true;
-        }
-        // Subtrai o valor do nó de sum e guarda o valor na lista se existe um subconjunto que satisfaz as condições 
-        if (isSubsetSum(conjunto, vetSize - 1, sum - conjunto[vetSize - 1])) {
-            resultReturn.add(conjunto[vetSize - 1]);
-            return true;
-        }
+	public boolean isSubsetSum(int sum) {
+		return isSubsetSum( this.conjunto.length, sum);
+	}
 
-        return false;
-    }
+	// Árvore começa do último elemento do vetor
+	private boolean isSubsetSum(int vetSize, int sum) {
+		// Casos base
+
+		if (sum == 0) {
+			return true;
+		}
+		if (vetSize == 0) {
+			return false;
+		}
+		// Desce na árvore até até o primeiro elemento à esquerda, note que mesmo
+		// achando o valor exato ele continua descendo já que sum nunca será 0
+		if (isSubsetSum( vetSize - 1, sum)) {
+			return true;
+		}
+		// Subtrai o valor do nó de sum e guarda o valor na lista se existe um
+		// subconjunto que satisfaz as condições
+		if (isSubsetSum( vetSize - 1, sum - this.conjunto[vetSize - 1])) {
+			resultReturn.add(this.conjunto[vetSize - 1]);
+			return true;
+		}
+
+		return false;
+	}
+
+	public LinkedList<Integer> getResultReturn() {
+		return this.resultReturn;
+	}
 
 }

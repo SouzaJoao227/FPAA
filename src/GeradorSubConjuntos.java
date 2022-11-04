@@ -1,6 +1,6 @@
 public class GeradorSubConjuntos {
 
-    public static int[] GeradorDeConjuntos(int size) {
+    public int[] gerarConjuntos(int size) {
         int[] retorno = new int[size];
         
 
