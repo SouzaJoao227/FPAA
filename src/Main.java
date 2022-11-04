@@ -15,11 +15,11 @@ public class Main {
 		final BufferedWriter logger = new BufferedWriter(new FileWriter(file));
 		long tempo = 0;
 		long tempoInicio, tempoFim;
-		System.out.println("inicio");
+		System.out.println("Início");
 		for (int i = 2; tempo < 4000 && i <= 150; i++) {
 
 			int[] conj = gerador.gerarConjuntos(i);
-			int soma = calculaValorMedio(conj);
+			int soma = calculaValorMetade(conj);
 
 			final CalculaConjunto calculador = new CalculaConjunto(conj);
 
@@ -31,7 +31,8 @@ public class Main {
 			loggar(i, tempo, soma, conj, calculador.getResultReturn(), logger);
 
 		}
-
+		System.out.println("Dados armazenados no path Documentação/log file.txt");
+		System.out.println("Fim");
 		logger.close();
 
 	}
@@ -65,7 +66,7 @@ public class Main {
 
 	}
 
-	private static int calculaValorMedio(int[] vetor) {
+	private static int calculaValorMetade(int[] vetor) {
 		int soma = 0;
 
 		for (int i = 0; i < vetor.length; i++) {
