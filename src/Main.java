@@ -1,40 +1,78 @@
-
-import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws Exception {
 
-        System.out.println("Digite o tamanho do vetor");
-        int vetSize = sc.nextInt();
+		final GeradorSubConjuntos gerador = new GeradorSubConjuntos();
+		final File file = new File("Documentação/log file.txt");
+		file.createNewFile();
+		final BufferedWriter logger = new BufferedWriter(new FileWriter(file));
+		long tempo = 0;
+		long tempoInicio, tempoFim;
+		System.out.println("inicio");
+		for (int i = 2; tempo < 4000 && i <= 150; i++) {
 
-        System.out.println("Digite a soma que deve ser encontrada:");
-        int vetSum = sc.nextInt();
+			int[] conj = gerador.gerarConjuntos(i);
+			int soma = calculaValorMedio(conj);
 
-        sc.close();
+			final CalculaConjunto calculador = new CalculaConjunto(conj);
 
-        int[] conjunto = GeradorSubConjuntos.GeradorDeConjuntos(vetSize);
+			tempoInicio = System.currentTimeMillis();
+			calculador.isSubsetSum(soma);
+			tempoFim = System.currentTimeMillis();
+			tempo = tempoFim - tempoInicio;
+			
+			loggar(i, tempo, soma, conj, calculador.getResultReturn(), logger);
 
-        printVetor(conjunto);
+		}
 
-        if (CalculaConjunto.isSubsetSum(conjunto, vetSize, vetSum) == true) {
-            System.out.println("Subconjunto encontrado"
-                    + " com o somatorio: " + vetSum);
-            System.out.println(CalculaConjunto.resultReturn);
-        } else
-            System.out.println("Subconjunto não encontrado"
-                    + " com o somatorio " + vetSum);
-    }
+		logger.close();
 
-    private static void printVetor(int[] vetor) {
-        System.out.println("Vetor: ");
-        System.out.print("[");
-        for (int x = 0; x < vetor.length; x++) {
-            
-            System.out.print(vetor[x] + ",");
-        }
-        System.out.print("]");
-        System.out.println();
-    }
+	}
+
+	private static void loggar(int tamanho, long tempo, int soma, int[] conj, List<Integer> subConjunto, BufferedWriter logger) {
+
+		StringBuilder saida = new StringBuilder();
+
+		saida.append("tamanho: ");
+		saida.append(tamanho);
+		saida.append("\t");
+		saida.append("tempo: ");
+		saida.append(tempo);
+		saida.append("\t");
+		saida.append("soma: ");
+		saida.append(soma);
+		saida.append("\t");
+		saida.append("conjunto: ");
+		saida.append(Arrays.toString(conj));
+		saida.append("\t");
+		saida.append("sub conjunto: ");
+		saida.append(subConjunto);
+
+		try {
+			logger.write(saida.toString());
+			logger.newLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+
+	}
+
+	private static int calculaValorMedio(int[] vetor) {
+		int soma = 0;
+
+		for (int i = 0; i < vetor.length; i++) {
+			soma += vetor[i];
+		}
+
+		return soma / 2;
+	}
+
 }
