@@ -7,7 +7,7 @@
 * Vitor de Souza Xavier
 * Vítor José Lara Bastos
 
-## Professores responsáveis
+## Professor responsável
 
 * João Caram Santos de Oliveira
 
