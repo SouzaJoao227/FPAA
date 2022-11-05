@@ -6,55 +6,65 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Main {
+	
+	private static final int tempoLimite = 4000;
+	private static final int qtdRepeticoes = 150;
 
 	public static void main(String[] args) throws Exception {
 
 		final GeradorSubConjuntos gerador = new GeradorSubConjuntos();
-		final File file = new File("Documentação/log file.txt");
-		file.createNewFile();
-		final BufferedWriter logger = new BufferedWriter(new FileWriter(file));
-		long tempo = 0;
-		long tempoInicio, tempoFim;
+		long tempoMedio, tempoInicio, tempoFim;
+		tempoMedio = 0;
 		System.out.println("Início");
-		for (int i = 2; tempo < 4000 && i <= 150; i++) {
 
-			int[] conj = gerador.gerarConjuntos(i);
-			int soma = calculaValorMetade(conj);
+		final BufferedWriter loggerTempo = createFile("Documentação/log file.txt");
+		final BufferedWriter loggerSolucao = createFile("Documentação/solucoes.txt");
 
-			final CalculaConjunto calculador = new CalculaConjunto(conj);
+		for (int tam = 2; tempoMedio < tempoLimite; tam++) {
+			long tempo = 0;
+			for (int i = 0; i < qtdRepeticoes; i++) {
+				System.out.println(tam + ": rep: " + i);
+				int[] conj = gerador.gerarConjuntos(tam);
+				int soma = calculaValorMetade(conj);
+				
+				final CalculaConjunto calculador = new CalculaConjunto(conj);
+				tempoInicio = System.currentTimeMillis();
+				calculador.isSubsetSum(soma);
+				tempoFim = System.currentTimeMillis();
+				tempo += tempoFim - tempoInicio;
 
-			tempoInicio = System.currentTimeMillis();
-			calculador.isSubsetSum(soma);
-			tempoFim = System.currentTimeMillis();
-			tempo = tempoFim - tempoInicio;
-			
-			loggar(i, tempo, soma, conj, calculador.getResultReturn(), logger);
+				loggarSolucao(soma, conj, calculador.getResultReturn(), loggerSolucao);
+
+			}
+			tempoMedio = tempo / qtdRepeticoes;
+			loggarTempo(tam, tempoMedio, loggerTempo);
 
 		}
 		System.out.println("Dados armazenados no path Documentação/log file.txt");
 		System.out.println("Fim");
-		logger.close();
-
+		loggerTempo.close();
+		loggerSolucao.close();
 	}
 
-	private static void loggar(int tamanho, long tempo, int soma, int[] conj, List<Integer> subConjunto, BufferedWriter logger) {
+	private static BufferedWriter createFile(String fileName) {
+		try {
+			File file = new File(fileName);
+			file.createNewFile();
+			return new BufferedWriter(new FileWriter(file));
+		} catch (IOException e) {
+			return null;
+		}
+	}
 
+	private static void loggarSolucao(int soma, int[] conjunto, List<Integer> solucao, BufferedWriter logger) {
 		StringBuilder saida = new StringBuilder();
 
-		saida.append("tamanho: ");
-		saida.append(tamanho);
-		saida.append("\t");
-		saida.append("tempo: ");
-		saida.append(tempo);
-		saida.append("\t");
-		saida.append("soma: ");
+		saida.append("Conjunto: ");
+		saida.append(Arrays.toString(conjunto));
+		saida.append("\tsoma: ");
 		saida.append(soma);
-		saida.append("\t");
-		saida.append("conjunto: ");
-		saida.append(Arrays.toString(conj));
-		saida.append("\t");
-		saida.append("sub conjunto: ");
-		saida.append(subConjunto);
+		saida.append("\tsolução");
+		saida.append(solucao);
 
 		try {
 			logger.write(saida.toString());
@@ -62,7 +72,24 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+	}
+
+	private static void loggarTempo(int tamanho, long tempo, BufferedWriter logger) {
+
+		StringBuilder saida = new StringBuilder();
+
+		saida.append("tamanho: ");
+		saida.append(tamanho);
+		saida.append("\t");
+		saida.append("tempo medio: ");
+		saida.append(tempo);
+
+		try {
+			logger.write(saida.toString());
+			logger.newLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
